@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: build-app
+  namespace: cicd-platform
+spec:
+  steps:
+    - name: build
+      image: alpine:3.20
+      script: |
+        #!/bin/sh
+
+        echo "================================="
+        echo "        BUILD APPLICATION"
+        echo "================================="
+
+        echo "Préparation du build..."
+        sleep 2
+
+        echo "Compilation de l'application..."
+        sleep 2
+
+        echo "Build terminé avec succès."

@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: deploy-app
+  namespace: cicd-platform
+spec:
+  steps:
+    - name: deploy
+      image: alpine:3.20
+      script: |
+        #!/bin/sh
+
+        echo "================================="
+        echo "        DEPLOY APPLICATION"
+        echo "================================="
+
+        echo "Préparation du déploiement..."
+        sleep 2
+
+        echo "Déploiement vers Kubernetes..."
+        sleep 2
+
+        echo "Application déployée avec succès."

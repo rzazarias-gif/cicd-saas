@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: hello-task
+  namespace: cicd-platform
+spec:
+  steps:
+    - name: hello
+      image: alpine:3.20
+      script: |
+        #!/bin/sh
+        echo "================================="
+        echo "   CI/CD SaaS - Tekton"
+        echo "================================="
+        echo "Hello depuis Kubernetes !"
+        echo "La première Task Tekton fonctionne."

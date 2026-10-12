@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: cicd-pipeline
+  namespace: cicd-platform
+spec:
+  tasks:
+
+    - name: build
+      taskRef:
+        name: build-app
+
+    - name: test
+      runAfter:
+        - build
+      taskRef:
+        name: test-app
+
+    - name: deploy
+      runAfter:
+        - test
+      taskRef:
+        name: deploy-app

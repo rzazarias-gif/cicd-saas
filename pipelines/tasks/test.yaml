@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test-app
+  namespace: cicd-platform
+spec:
+  steps:
+    - name: test
+      image: alpine:3.20
+      script: |
+        #!/bin/sh
+
+        echo "================================="
+        echo "        TEST APPLICATION"
+        echo "================================="
+
+        echo "Exécution des tests..."
+        sleep 2
+
+        echo "Test 1 : OK"
+        echo "Test 2 : OK"
+        echo "Test 3 : OK"
+
+        echo "Tous les tests sont réussis."
