@@ -1,3 +1,4 @@
+// Test du déclenchement automatique CI/CD via GitHub
 const express = require("express");
 
 const app = express();
