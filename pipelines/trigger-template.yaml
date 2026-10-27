@@ -1,0 +1,30 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: github-push-template
+  namespace: cicd-platform
+spec:
+  params:
+    - name: git-url
+      description: URL du dépôt GitHub
+    - name: git-revision
+      description: Branche ou référence Git
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: cicd-github-push-
+        namespace: cicd-platform
+        annotations:
+          cicd-saas/git-url: "$(tt.params.git-url)"
+          cicd-saas/git-revision: "$(tt.params.git-revision)"
+      spec:
+        pipelineRef:
+          name: cicd-pipeline-real
+        taskRunSpecs:
+          - pipelineTaskName: deploy
+            serviceAccountName: tekton-deployer
+        workspaces:
+          - name: source
+            persistentVolumeClaim:
+              claimName: cicd-source-pvc

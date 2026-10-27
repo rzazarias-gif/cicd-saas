@@ -1,0 +1,56 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: cicd-pipeline-real
+  namespace: cicd-platform
+
+spec:
+  workspaces:
+    - name: source
+
+  tasks:
+    # 1. Récupérer le code source
+    - name: clone
+      taskRef:
+        name: clone-public-repo
+      params:
+        - name: url
+          value: https://github.com/rzazarias-gif/cicd-saas.git
+        - name: revision
+          value: main
+      workspaces:
+        - name: source
+          workspace: source
+
+    # 2. Exécuter les tests
+    - name: test
+      runAfter:
+        - clone
+      taskRef:
+        name: test-source
+      workspaces:
+        - name: source
+          workspace: source
+
+    # 3. Construire et publier l'image
+    - name: build
+      runAfter:
+        - test
+      taskRef:
+        name: build-image
+      params:
+        - name: image-url
+          value: 10.105.205.220:80/demo-app:1.0
+      workspaces:
+        - name: source
+          workspace: source
+
+    # 4. Déployer l'application
+    - name: deploy
+      runAfter:
+        - build
+      taskRef:
+        name: deploy-app
+      params:
+        - name: image
+          value: 10.105.205.220:80/demo-app:1.0

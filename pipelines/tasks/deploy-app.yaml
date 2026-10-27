@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: deploy-app
+  namespace: cicd-platform
+spec:
+  params:
+    - name: image
+      type: string
+      description: Image de l'application à déployer
+
+  steps:
+    - name: deploy
+      image: bitnami/kubectl:latest
+      script: |
+        #!/bin/sh
+        set -eu
+
+        IMAGE="$(params.image)"
+        NAMESPACE="cicd-platform"
+        DEPLOYMENT="demo-app"
+
+        echo "======================================"
+        echo "       DEPLOIEMENT KUBERNETES"
+        echo "======================================"
+
+        echo "Image : $IMAGE"
+
+        kubectl set image \
+          deployment/"$DEPLOYMENT" \
+          demo-app="$IMAGE" \
+          -n "$NAMESPACE"
+
+        echo "Attente de la fin du déploiement..."
+
+        kubectl rollout status \
+          deployment/"$DEPLOYMENT" \
+          -n "$NAMESPACE" \
+          --timeout=180s
+
+        echo "Déploiement terminé avec succès."

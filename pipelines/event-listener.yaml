@@ -1,0 +1,19 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: github-listener
+  namespace: cicd-platform
+spec:
+  serviceAccountName: tekton-triggers-sa
+  triggers:
+    - name: github-push-main
+      interceptors:
+        - ref:
+            name: cel
+          params:
+            - name: filter
+              value: "header.match('X-GitHub-Event', 'push') && body.ref == 'refs/heads/main'"
+      bindings:
+        - ref: github-push-binding
+      template:
+        ref: github-push-template

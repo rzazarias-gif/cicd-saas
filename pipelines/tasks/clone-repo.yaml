@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: clone-public-repo
+  namespace: cicd-platform
+spec:
+  params:
+    - name: url
+      type: string
+      description: URL du dépôt Git
+    - name: revision
+      type: string
+      description: Branche Git à récupérer
+      default: main
+
+  workspaces:
+    - name: source
+      description: Espace de travail pour le code source
+
+  steps:
+    - name: clone
+      image: alpine/git:latest
+      script: |
+        #!/bin/sh
+        set -eu
+
+        echo "=================================="
+        echo "     CLONAGE DU DEPOT GIT"
+        echo "=================================="
+
+        rm -rf "$(workspaces.source.path)/repo"
+
+        git clone \
+          --depth 1 \
+          --branch "$(params.revision)" \
+          "$(params.url)" \
+          "$(workspaces.source.path)/repo"
+
+        echo ""
+        echo "Fichiers récupérés :"
+        ls -la "$(workspaces.source.path)/repo"
+
+        echo ""
+        echo "Vérification de l'application..."
+
+        test -f "$(workspaces.source.path)/repo/demo-app/package.json"
+
+        echo "Le fichier package.json a été trouvé."
+        echo "Clonage terminé avec succès."

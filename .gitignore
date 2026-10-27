@@ -1,0 +1,19 @@
+# Dépendances Node.js
+node_modules/
+**/node_modules/
+
+# Fichiers temporaires et éditeurs
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Fichiers d'environnement et secrets locaux
+.env
+.env.*
+!.env.example
+
+# Journaux
+*.log
+npm-debug.log*

@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test-source
+  namespace: cicd-platform
+spec:
+  workspaces:
+    - name: source
+
+  steps:
+    - name: install-and-test
+      image: node:24-bookworm-slim
+      script: |
+        #!/bin/sh
+        set -eu
+
+        cd "$(workspaces.source.path)/repo/demo-app"
+
+        echo "=================================="
+        echo " INSTALLATION DES DEPENDANCES"
+        echo "=================================="
+
+        npm ci
+
+        echo ""
+        echo "=================================="
+        echo " TESTS DE L'APPLICATION"
+        echo "=================================="
+
+        npm test
+
+        echo ""
+        echo "Tous les tests ont réussi."
